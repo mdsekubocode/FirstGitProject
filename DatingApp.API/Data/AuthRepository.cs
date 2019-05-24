@@ -20,7 +20,7 @@ namespace DatingApp.API.Data
             if (user == null)
             return null;
 
-            if (!VerifyPasswordHash(password, user.PasswordHash, user.PassordSalt))
+            if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
             return null;
 
             return user;
@@ -45,7 +45,7 @@ namespace DatingApp.API.Data
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
             user.PasswordHash = passwordHash;
-            user.PassordSalt = passwordSalt;
+            user.PasswordSalt = passwordSalt;
 
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
@@ -55,12 +55,12 @@ namespace DatingApp.API.Data
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            using( var hmac = new System.Security.Cryptography.HMACSHA512())
+         using( var hmac = new System.Security.Cryptography.HMACSHA512())
             {
                 passwordSalt = hmac.Key;
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
-        }
+        }   
 
         public async Task<bool> UserExists(string username)
         {
